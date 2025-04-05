@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Card, Form, Button, Alert } from 'react-bootstrap';
 
 function RegisterForm() {
   const [email, setEmail] = useState('');
@@ -50,70 +51,65 @@ function RegisterForm() {
   };
 
   return (
-    <div className="bg-white shadow-md rounded px-8 py-6 mb-4">
-      <h2 className="text-2xl font-bold mb-4 text-center">Регистрация</h2>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      {success && <p className="text-green-500 mb-4">{success}</p>}
-      <form onSubmit={handleRegister}>
-        <div className="mb-4">
-          <label className="block text-gray-700">Email</label>
-          <input 
-            type="email" 
-            placeholder="Введите email" 
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:border-blue-500"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Имя пользователя</label>
-          <input 
-            type="text" 
-            placeholder="Введите имя пользователя" 
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:border-blue-500"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Пароль</label>
-          <input 
-            type="password" 
-            placeholder="Введите пароль" 
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:border-blue-500"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Avatar (опционально)</label>
-          <input 
-            type="file" 
-            accept="image/*"
-            onChange={handleFileChange}
-            className="w-full p-2"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">О себе (опционально)</label>
-          <textarea 
-            placeholder="Расскажите о себе" 
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:border-blue-500"
-          ></textarea>
-        </div>
-        <button 
-          type="submit"
-          className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
-        >
-          Зарегистрироваться
-        </button>
-      </form>
-    </div>
+    <Card className="shadow">
+      <Card.Body>
+        <Card.Title className="mb-4 text-center">Регистрация</Card.Title>
+        {error && <Alert variant="danger">{error}</Alert>}
+        {success && <Alert variant="success">{success}</Alert>}
+        <Form onSubmit={handleRegister}>
+          <Form.Group className="mb-3" controlId="registerEmail">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="Введите email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="registerUsername">
+            <Form.Label>Имя пользователя</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Введите имя пользователя"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="registerPassword">
+            <Form.Label>Пароль</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Введите пароль"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="registerAvatar">
+            <Form.Label>Avatar (опционально)</Form.Label>
+            <Form.Control
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="registerBio">
+            <Form.Label>О себе (опционально)</Form.Label>
+            <Form.Control
+              as="textarea"
+              placeholder="Расскажите о себе"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+            />
+          </Form.Group>
+          <Button variant="success" type="submit" className="w-100">
+            Зарегистрироваться
+          </Button>
+        </Form>
+      </Card.Body>
+    </Card>
   );
 }
 

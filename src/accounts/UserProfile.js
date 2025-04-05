@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Card, Alert } from 'react-bootstrap';
 
 function UserProfile() {
   const [user, setUser] = useState(null);
@@ -40,34 +41,38 @@ function UserProfile() {
 
   if (error) {
     return (
-      <div className="bg-white shadow-md rounded p-4">
-        <p className="text-red-500">{error}</p>
-      </div>
+      <Card className="shadow">
+        <Card.Body>
+          <Alert variant="danger">{error}</Alert>
+        </Card.Body>
+      </Card>
     );
   }
 
   if (!user) {
     return (
-      <div className="bg-white shadow-md rounded p-4">
-        Загрузка...
-      </div>
+      <Card className="shadow">
+        <Card.Body>Загрузка...</Card.Body>
+      </Card>
     );
   }
 
   return (
-    <div className="bg-white shadow-md rounded p-4">
-      <h2 className="text-2xl font-bold mb-4">Профиль пользователя</h2>
-      <p><strong>ID:</strong> {user.id}</p>
-      <p><strong>Email:</strong> {user.email}</p>
-      <p><strong>Username:</strong> {user.username}</p>
-      {user.avatar && (
-        <div className="my-4">
-          <strong>Avatar:</strong>
-          <img src={user.avatar} alt="Avatar" className="mt-2 max-w-full rounded" />
-        </div>
-      )}
-      {user.bio && <p><strong>Bio:</strong> {user.bio}</p>}
-    </div>
+    <Card className="shadow">
+      <Card.Body>
+        <Card.Title className="mb-4">Профиль пользователя</Card.Title>
+        <p><strong>ID:</strong> {user.id}</p>
+        <p><strong>Email:</strong> {user.email}</p>
+        <p><strong>Username:</strong> {user.username}</p>
+        {user.avatar && (
+          <div className="my-3">
+            <strong>Avatar:</strong>
+            <img src={user.avatar} alt="Avatar" className="img-fluid rounded mt-2" />
+          </div>
+        )}
+        {user.bio && <p><strong>Bio:</strong> {user.bio}</p>}
+      </Card.Body>
+    </Card>
   );
 }
 

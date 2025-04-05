@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Card, Form, Button, Alert } from 'react-bootstrap';
 
 function ChangePasswordForm() {
   const [oldPassword, setOldPassword] = useState('');
@@ -48,41 +49,38 @@ function ChangePasswordForm() {
   };
 
   return (
-    <div className="bg-white shadow-md rounded px-8 py-6 mb-4">
-      <h2 className="text-2xl font-bold mb-4 text-center">Сменить пароль</h2>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      {success && <p className="text-green-500 mb-4">{success}</p>}
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-gray-700">Старый пароль</label>
-          <input 
-            type="password" 
-            placeholder="Введите старый пароль"
-            value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:border-blue-500"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Новый пароль</label>
-          <input 
-            type="password" 
-            placeholder="Введите новый пароль"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:border-blue-500"
-            required
-          />
-        </div>
-        <button 
-          type="submit"
-          className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
-        >
-          Сменить пароль
-        </button>
-      </form>
-    </div>
+    <Card className="shadow">
+      <Card.Body>
+        <Card.Title className="mb-4 text-center">Сменить пароль</Card.Title>
+        {error && <Alert variant="danger">{error}</Alert>}
+        {success && <Alert variant="success">{success}</Alert>}
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="mb-3" controlId="oldPassword">
+            <Form.Label>Старый пароль</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Введите старый пароль"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="newPassword">
+            <Form.Label>Новый пароль</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Введите новый пароль"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Button variant="success" type="submit" className="w-100">
+            Сменить пароль
+          </Button>
+        </Form>
+      </Card.Body>
+    </Card>
   );
 }
 
