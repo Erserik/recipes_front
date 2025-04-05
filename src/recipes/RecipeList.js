@@ -60,46 +60,48 @@ const RecipeList = () => {
     return (
         <div className="max-w-3xl mx-auto mt-6">
             <h2 className="text-xl font-semibold mb-4">📋 Рецепты</h2>
-            {recipes.length === 0 && <p>Нет доступных рецептов</p>}
-            {recipes.map(recipe => {
-                const isAuthor = recipe.author === currentUserEmail;
 
-                return (
-                    <div key={recipe.id} className="p-4 border border-gray-200 rounded-lg mb-6 shadow-sm bg-white">
-                        <h3 className="text-lg font-bold">{recipe.title}</h3>
-                        <p className="mb-1">{recipe.description}</p>
-                        <p className="text-sm text-gray-600">
-                            <strong>Автор:</strong> {recipe.author}
-                        </p>
+            {!currentUserEmail ? (
+                <p className="text-gray-600">Чтобы просматривать рецепты, пожалуйста, авторизуйтесь.</p>
+            ) : (
+                <>
+                    {recipes.length === 0 && <p>Нет доступных рецептов</p>}
+                    {recipes.map(recipe => {
+                        const isAuthor = recipe.author === currentUserEmail;
 
-                        {/* Кнопки только для автора */}
-                        {isAuthor && (
-                            <div className="mt-2 space-x-2">
-                                <button
-                                    className="text-blue-600 hover:underline"
-                                    onClick={() => setEditingRecipe(recipe)}
-                                >
-                                    ✏️ Редактировать
-                                </button>
-                                <button
-                                    className="text-red-600 hover:underline"
-                                    onClick={() => handleDelete(recipe.id)}
-                                >
-                                    🗑 Удалить
-                                </button>
+                        return (
+                            <div key={recipe.id} className="p-4 border border-gray-200 rounded-lg mb-6 shadow-sm bg-white">
+                                <h3 className="text-lg font-bold">{recipe.title}</h3>
+                                <p className="mb-1">{recipe.description}</p>
+                                <p className="text-sm text-gray-600">
+                                    <strong>Автор:</strong> {recipe.author}
+                                </p>
+
+                                {isAuthor && (
+                                    <div className="mt-2 space-x-2">
+                                        <button
+                                            className="text-blue-600 hover:underline"
+                                            onClick={() => setEditingRecipe(recipe)}
+                                        >
+                                            ✏️ Редактировать
+                                        </button>
+                                        <button
+                                            className="text-red-600 hover:underline"
+                                            onClick={() => handleDelete(recipe.id)}
+                                        >
+                                            🗑 Удалить
+                                        </button>
+                                    </div>
+                                )}
+
+                                <RecipeIngredients recipeId={recipe.id} isAuthor={isAuthor} />
+                                <CommentSection recipeId={recipe.id} />
                             </div>
-                        )}
+                        );
+                    })}
+                </>
+            )}
 
-                        {/* Секция ингредиентов */}
-                        <RecipeIngredients recipeId={recipe.id} isAuthor={isAuthor} />
-
-                        {/* Секция комментариев */}
-                        <CommentSection recipeId={recipe.id} />
-                    </div>
-                );
-            })}
-
-            {/* Модалка редактирования */}
             {editingRecipe && (
                 <EditRecipeModal
                     recipe={editingRecipe}
