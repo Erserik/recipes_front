@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Alert } from 'react-bootstrap';
 
 function UserProfile() {
   const [user, setUser] = useState(null);
@@ -41,38 +40,40 @@ function UserProfile() {
 
   if (error) {
     return (
-      <Card className="shadow">
-        <Card.Body>
-          <Alert variant="danger">{error}</Alert>
-        </Card.Body>
-      </Card>
+        <div className="bg-white shadow-md rounded px-6 py-4 max-w-lg mx-auto mt-8">
+          <div className="bg-red-100 text-red-700 px-4 py-2 rounded">{error}</div>
+        </div>
     );
   }
 
   if (!user) {
     return (
-      <Card className="shadow">
-        <Card.Body>Загрузка...</Card.Body>
-      </Card>
+        <div className="bg-white shadow-md rounded px-6 py-4 max-w-lg mx-auto mt-8 text-center">
+          Загрузка...
+        </div>
     );
   }
 
   return (
-    <Card className="shadow">
-      <Card.Body>
-        <Card.Title className="mb-4">Профиль пользователя</Card.Title>
-        <p><strong>ID:</strong> {user.id}</p>
-        <p><strong>Email:</strong> {user.email}</p>
-        <p><strong>Username:</strong> {user.username}</p>
-        {user.avatar && (
-          <div className="my-3">
-            <strong>Avatar:</strong>
-            <img src={user.avatar} alt="Avatar" className="img-fluid rounded mt-2" />
-          </div>
-        )}
-        {user.bio && <p><strong>Bio:</strong> {user.bio}</p>}
-      </Card.Body>
-    </Card>
+      <div className="bg-white shadow-md rounded px-6 py-6 max-w-lg mx-auto mt-8">
+        <h2 className="text-2xl font-semibold mb-4 text-center">Профиль пользователя</h2>
+        <div className="space-y-2">
+          <p><strong>ID:</strong> {user.id}</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>Имя пользователя:</strong> {user.username}</p>
+          {user.bio && <p><strong>О себе:</strong> {user.bio}</p>}
+          {user.avatar && (
+              <div className="mt-4">
+                <strong>Аватар:</strong>
+                <img
+                    src={user.avatar}
+                    alt="Avatar"
+                    className="w-32 h-32 rounded-full mt-2 object-cover border"
+                />
+              </div>
+          )}
+        </div>
+      </div>
   );
 }
 

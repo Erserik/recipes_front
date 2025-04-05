@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Card, Form, Button, Alert } from 'react-bootstrap';
 
 function LoginForm({ onLogin }) {
   const [email, setEmail] = useState('');
@@ -33,37 +32,50 @@ function LoginForm({ onLogin }) {
   };
 
   return (
-    <Card className="shadow">
-      <Card.Body>
-        <Card.Title className="mb-4 text-center">Вход</Card.Title>
-        {error && <Alert variant="danger">{error}</Alert>}
-        <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3" controlId="loginEmail">
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="Введите email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+      <div className="bg-white shadow-md rounded px-8 py-6 max-w-md mx-auto mt-8">
+        <h2 className="text-2xl font-semibold text-center mb-4">Вход</h2>
+        {error && (
+            <div className="bg-red-100 text-red-700 px-4 py-2 mb-4 rounded">
+              {error}
+            </div>
+        )}
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label htmlFor="loginEmail" className="block text-sm font-medium mb-1">
+              Email
+            </label>
+            <input
+                id="loginEmail"
+                type="email"
+                className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Введите email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
             />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="loginPassword">
-            <Form.Label>Пароль</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Введите пароль"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
+          </div>
+          <div className="mb-6">
+            <label htmlFor="loginPassword" className="block text-sm font-medium mb-1">
+              Пароль
+            </label>
+            <input
+                id="loginPassword"
+                type="password"
+                className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Введите пароль"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
             />
-          </Form.Group>
-          <Button variant="primary" type="submit" className="w-100">
+          </div>
+          <button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
+          >
             Войти
-          </Button>
-        </Form>
-      </Card.Body>
-    </Card>
+          </button>
+        </form>
+      </div>
   );
 }
 
