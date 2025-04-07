@@ -5,21 +5,25 @@ import RecipeIngredients from './RecipeIngredients';
 
 const RecipeList = () => {
     const [recipes, setRecipes] = useState([]);
-    const [currentUserEmail, setCurrentUserEmail] = useState('');
+    const [currentUser, setCurrentUser] = useState(null);
     const [error, setError] = useState('');
     const [editingRecipe, setEditingRecipe] = useState(null);
 
+    const token = localStorage.getItem('accessToken');
+
     useEffect(() => {
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-            fetch('https://erko123.pythonanywhere.com/api/v1/auth/user/', {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-                .then(res => res.json())
-                .then(data => setCurrentUserEmail(data.email))
-                .catch(() => setCurrentUserEmail(''));
-        }
-    }, []);
+        if (!token) return;
+
+        fetch('https://erko123.pythonanywhere.com/api/v1/auth/user/', {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+            .then(res => res.json())
+            .then(data => setCurrentUser(data))
+            .catch(() => {
+                setError('Ошибка при получении пользователя');
+                setCurrentUser(null);
+            });
+    }, [token]);
 
     const fetchRecipes = () => {
         fetch('https://erko123.pythonanywhere.com/api/v1/recipes/')
@@ -33,7 +37,6 @@ const RecipeList = () => {
     }, []);
 
     const handleDelete = async (id) => {
-        const token = localStorage.getItem('accessToken');
         if (!token) return alert('Вы не авторизованы');
 
         const confirmed = window.confirm('Вы уверены, что хотите удалить рецепт?');
@@ -52,10 +55,9 @@ const RecipeList = () => {
     };
 
     const handleBuyIngredients = async (recipeId, ingredients) => {
-        const token = localStorage.getItem('accessToken');
-        if (!token) return alert('Вы не авторизованы');
+        if (!token || !currentUser?.id) return alert('Нет данных о пользователе');
 
-        const shoppingListId = 1; // 🔥 Укажи ID уже существующего списка покупок!
+        const shoppingListId = currentUser.id; // 👈 Используем user.id как shopping_list_id
 
         try {
             for (const ing of ingredients) {
@@ -88,13 +90,13 @@ const RecipeList = () => {
         <div className="max-w-3xl mx-auto mt-6">
             <h2 className="text-xl font-semibold mb-4">📋 Рецепты</h2>
 
-            {!currentUserEmail ? (
+            {!currentUser ? (
                 <p className="text-gray-600">Чтобы просматривать рецепты, пожалуйста, авторизуйтесь.</p>
             ) : (
                 <>
                     {recipes.length === 0 && <p>Нет доступных рецептов</p>}
                     {recipes.map(recipe => {
-                        const isAuthor = recipe.author === currentUserEmail;
+                        const isAuthor = recipe.author === currentUser.email;
 
                         return (
                             <div key={recipe.id} className="p-4 border border-gray-200 rounded-lg mb-6 shadow-sm bg-white">

@@ -30,11 +30,12 @@ function ChangePasswordForm() {
         })
       });
 
+      const result = await response.json();
+
       if (!response.ok) {
-        const errData = await response.json();
-        const errorMessage = typeof errData === 'object'
-            ? Object.values(errData).flat().join(' ')
-            : (errData.detail || 'Ошибка при смене пароля');
+        const errorMessage = typeof result === 'object'
+            ? Object.values(result).flat().join(' ')
+            : (result.detail || 'Ошибка при смене пароля');
         setError(errorMessage);
         return;
       }
@@ -48,46 +49,36 @@ function ChangePasswordForm() {
   };
 
   return (
-      <div className="bg-white shadow-md rounded px-8 py-6 max-w-lg mx-auto mt-8">
-        <h2 className="text-2xl font-semibold text-center mb-4">Сменить пароль</h2>
+      <div className="mt-8">
+        <h3 className="text-lg font-semibold mb-2">🔐 Смена пароля</h3>
+        {error && <p className="text-red-600">{error}</p>}
+        {success && <p className="text-green-600">{success}</p>}
 
-        {error && (
-            <div className="bg-red-100 text-red-700 px-4 py-2 mb-4 rounded">{error}</div>
-        )}
-        {success && (
-            <div className="bg-green-100 text-green-700 px-4 py-2 mb-4 rounded">{success}</div>
-        )}
-
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Старый пароль</label>
+        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+          <div>
+            <label className="block font-medium">Старый пароль</label>
             <input
                 type="password"
-                className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Введите старый пароль"
+                className="w-full border rounded px-3 py-2"
                 value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
                 required
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Новый пароль</label>
+          <div>
+            <label className="block font-medium">Новый пароль</label>
             <input
                 type="password"
-                className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Введите новый пароль"
+                className="w-full border rounded px-3 py-2"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
             />
           </div>
 
-          <button
-              type="submit"
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
-          >
-            Сменить пароль
+          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+            Обновить пароль
           </button>
         </form>
       </div>

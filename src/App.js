@@ -1,9 +1,7 @@
-// src/App.js
 import React, { useState, useEffect } from 'react';
 import RegisterForm from './accounts/RegisterForm';
 import LoginForm from './accounts/LoginForm';
 import UserProfile from './accounts/UserProfile';
-import ChangePasswordForm from './accounts/ChangePasswordForm';
 import HomePage from './pages/HomePage';
 import RecipeCreatePage from './pages/RecipeCreatePage';
 import ShoppingListPage from './recipes/ShoppingListPage';
@@ -43,8 +41,6 @@ function App() {
       switch (view) {
         case 'profile':
           return <UserProfile />;
-        case 'changePassword':
-          return <ChangePasswordForm />;
         case 'create':
           return <RecipeCreatePage onBack={() => setView('home')} />;
         case 'shopping':
@@ -60,64 +56,34 @@ function App() {
         <nav className="bg-gray-800">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex justify-between items-center h-16">
-              <button
-                  onClick={() => setView('home')}
-                  className="text-white font-bold text-xl"
-              >
+              <button onClick={() => setView('home')} className="text-white font-bold text-xl">
                 My Recipes App
               </button>
               <div className="flex space-x-4">
                 {!isAuthenticated ? (
                     <>
-                      <button
-                          onClick={() => setView('register')}
-                          className="text-gray-300 hover:text-white"
-                      >
+                      <button onClick={() => setView('register')} className="text-gray-300 hover:text-white">
                         Регистрация
                       </button>
-                      <button
-                          onClick={() => setView('login')}
-                          className="text-gray-300 hover:text-white"
-                      >
+                      <button onClick={() => setView('login')} className="text-gray-300 hover:text-white">
                         Вход
                       </button>
                     </>
                 ) : (
                     <>
-                      <button
-                          onClick={() => setView('home')}
-                          className="text-gray-300 hover:text-white"
-                      >
+                      <button onClick={() => setView('home')} className="text-gray-300 hover:text-white">
                         Главная
                       </button>
-                      <button
-                          onClick={() => setView('create')}
-                          className="text-gray-300 hover:text-white"
-                      >
+                      <button onClick={() => setView('create')} className="text-gray-300 hover:text-white">
                         ➕ Рецепт
                       </button>
-                      <button
-                          onClick={() => setView('shopping')}
-                          className="text-gray-300 hover:text-white"
-                      >
+                      <button onClick={() => setView('shopping')} className="text-gray-300 hover:text-white">
                         🛒 Покупки
                       </button>
-                      <button
-                          onClick={() => setView('profile')}
-                          className="text-gray-300 hover:text-white"
-                      >
+                      <button onClick={() => setView('profile')} className="text-gray-300 hover:text-white">
                         Профиль
                       </button>
-                      <button
-                          onClick={() => setView('changePassword')}
-                          className="text-gray-300 hover:text-white"
-                      >
-                        Сменить пароль
-                      </button>
-                      <button
-                          onClick={handleLogout}
-                          className="text-gray-300 hover:text-white"
-                      >
+                      <button onClick={handleLogout} className="text-gray-300 hover:text-white">
                         Выход
                       </button>
                     </>
