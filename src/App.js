@@ -6,6 +6,7 @@ import UserProfile from './accounts/UserProfile';
 import ChangePasswordForm from './accounts/ChangePasswordForm';
 import HomePage from './pages/HomePage';
 import RecipeCreatePage from './pages/RecipeCreatePage';
+import ShoppingListPage from './recipes/ShoppingListPage';
 
 function App() {
   const [view, setView] = useState('home');
@@ -31,16 +32,25 @@ function App() {
   const renderContent = () => {
     if (!isAuthenticated) {
       switch (view) {
-        case 'register': return <RegisterForm />;
-        case 'login': return <LoginForm onLogin={handleLoginSuccess} />;
-        default: return <HomePage />;
+        case 'register':
+          return <RegisterForm />;
+        case 'login':
+          return <LoginForm onLogin={handleLoginSuccess} />;
+        default:
+          return <HomePage />;
       }
     } else {
       switch (view) {
-        case 'profile': return <UserProfile />;
-        case 'changePassword': return <ChangePasswordForm />;
-        case 'create': return <RecipeCreatePage onBack={() => setView('home')} />;
-        default: return <HomePage />;
+        case 'profile':
+          return <UserProfile />;
+        case 'changePassword':
+          return <ChangePasswordForm />;
+        case 'create':
+          return <RecipeCreatePage onBack={() => setView('home')} />;
+        case 'shopping':
+          return <ShoppingListPage />;
+        default:
+          return <HomePage />;
       }
     }
   };
@@ -59,16 +69,57 @@ function App() {
               <div className="flex space-x-4">
                 {!isAuthenticated ? (
                     <>
-                      <button onClick={() => setView('register')} className="text-gray-300 hover:text-white">Регистрация</button>
-                      <button onClick={() => setView('login')} className="text-gray-300 hover:text-white">Вход</button>
+                      <button
+                          onClick={() => setView('register')}
+                          className="text-gray-300 hover:text-white"
+                      >
+                        Регистрация
+                      </button>
+                      <button
+                          onClick={() => setView('login')}
+                          className="text-gray-300 hover:text-white"
+                      >
+                        Вход
+                      </button>
                     </>
                 ) : (
                     <>
-                      <button onClick={() => setView('home')} className="text-gray-300 hover:text-white">Главная</button>
-                      <button onClick={() => setView('create')} className="text-gray-300 hover:text-white">➕ Рецепт</button>
-                      <button onClick={() => setView('profile')} className="text-gray-300 hover:text-white">Профиль</button>
-                      <button onClick={() => setView('changePassword')} className="text-gray-300 hover:text-white">Сменить пароль</button>
-                      <button onClick={handleLogout} className="text-gray-300 hover:text-white">Выход</button>
+                      <button
+                          onClick={() => setView('home')}
+                          className="text-gray-300 hover:text-white"
+                      >
+                        Главная
+                      </button>
+                      <button
+                          onClick={() => setView('create')}
+                          className="text-gray-300 hover:text-white"
+                      >
+                        ➕ Рецепт
+                      </button>
+                      <button
+                          onClick={() => setView('shopping')}
+                          className="text-gray-300 hover:text-white"
+                      >
+                        🛒 Покупки
+                      </button>
+                      <button
+                          onClick={() => setView('profile')}
+                          className="text-gray-300 hover:text-white"
+                      >
+                        Профиль
+                      </button>
+                      <button
+                          onClick={() => setView('changePassword')}
+                          className="text-gray-300 hover:text-white"
+                      >
+                        Сменить пароль
+                      </button>
+                      <button
+                          onClick={handleLogout}
+                          className="text-gray-300 hover:text-white"
+                      >
+                        Выход
+                      </button>
                     </>
                 )}
               </div>

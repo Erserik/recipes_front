@@ -9,7 +9,6 @@ const RecipeList = () => {
     const [error, setError] = useState('');
     const [editingRecipe, setEditingRecipe] = useState(null);
 
-    // Получаем текущего пользователя
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
         if (token) {
@@ -22,7 +21,6 @@ const RecipeList = () => {
         }
     }, []);
 
-    // Загружаем рецепты
     const fetchRecipes = () => {
         fetch('https://erko123.pythonanywhere.com/api/v1/recipes/')
             .then(res => res.json())
@@ -43,15 +41,44 @@ const RecipeList = () => {
 
         const res = await fetch(`https://erko123.pythonanywhere.com/api/v1/recipes/${id}/`, {
             method: 'DELETE',
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
+            headers: { Authorization: `Bearer ${token}` }
         });
 
         if (res.ok) {
             setRecipes(prev => prev.filter(r => r.id !== id));
         } else {
             alert('Ошибка при удалении');
+        }
+    };
+
+    const handleBuyIngredients = async (recipeId, ingredients) => {
+        const token = localStorage.getItem('accessToken');
+        if (!token) return alert('Вы не авторизованы');
+
+        const shoppingListId = 1; // 🔥 Укажи ID уже существующего списка покупок!
+
+        try {
+            for (const ing of ingredients) {
+                await fetch('https://erko123.pythonanywhere.com/api/v1/shopping-list/items/', {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        shopping_list_id: shoppingListId,
+                        ingredient_id: ing.ingredient.id,
+                        recipe_id: recipeId,
+                        quantity: ing.quantity,
+                        unit: ing.unit
+                    })
+                });
+            }
+
+            alert('Ингредиенты добавлены в список покупок!');
+        } catch (err) {
+            console.error(err);
+            alert('Ошибка при добавлении ингредиентов');
         }
     };
 
@@ -77,6 +104,15 @@ const RecipeList = () => {
                                     <strong>Автор:</strong> {recipe.author}
                                 </p>
 
+                                {/* Купить ингредиенты */}
+                                <button
+                                    className="text-green-600 hover:underline text-sm my-2"
+                                    onClick={() => handleBuyIngredients(recipe.id, recipe.recipe_ingredients || [])}
+                                >
+                                    🛒 Купить ингредиенты
+                                </button>
+
+                                {/* Кнопки только для автора */}
                                 {isAuthor && (
                                     <div className="mt-2 space-x-2">
                                         <button

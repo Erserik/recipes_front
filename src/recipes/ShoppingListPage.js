@@ -1,88 +1,86 @@
+// src/recipes/ShoppingListPage.js
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 
 const ShoppingListPage = () => {
-    const { recipeId } = useParams();
     const [items, setItems] = useState([]);
     const [error, setError] = useState('');
-    const token = localStorage.getItem('accessToken');
 
-    const fetchList = async () => {
+    const headers = {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+    };
+
+    const fetchItems = async () => {
+        setError('');
         try {
-            const res = await fetch(`https://erko123.pythonanywhere.com/api/v1/shopping-list/items/`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
+            const res = await fetch('https://erko123.pythonanywhere.com/api/v1/shopping-list/items/', { headers });
             const data = await res.json();
-            const filtered = data.filter(item => item.recipe === parseInt(recipeId));
-            setItems(filtered);
-        } catch (err) {
-            setError('Ошибка загрузки списка');
+
+            const list = Array.isArray(data.results) ? data.results : [];
+            setItems(list);
+        } catch (e) {
+            console.error(e);
+            setError('Ошибка при загрузке списка покупок');
         }
     };
 
-    const togglePurchased = async (itemId, currentStatus) => {
+    const handlePurchase = async (id) => {
         try {
-            const res = await fetch(`https://erko123.pythonanywhere.com/api/v1/shopping-list/items/${itemId}/`, {
+            const res = await fetch(`https://erko123.pythonanywhere.com/api/v1/shopping-list/items/${id}/`, {
                 method: 'PATCH',
                 headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+                    ...headers,
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ is_purchased: !currentStatus })
+                body: JSON.stringify({ is_purchased: true })
             });
-
-            if (res.ok) {
-                fetchList();
-            } else {
-                setError('Ошибка обновления статуса');
-            }
-        } catch (err) {
-            setError('Ошибка при соединении');
+            if (res.ok) fetchItems();
+        } catch (e) {
+            console.error('Ошибка при обновлении элемента');
         }
     };
 
     useEffect(() => {
-        fetchList();
-    }, [recipeId]);
+        fetchItems();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const groupedByRecipe = items.reduce((acc, item) => {
+        const title = item.recipe_title || 'Без рецепта';
+        if (!acc[title]) acc[title] = [];
+        acc[title].push(item);
+        return acc;
+    }, {});
 
     return (
-        <div className="max-w-2xl mx-auto p-4 mt-6 bg-white rounded shadow">
-            <h2 className="text-xl font-bold mb-4">🛒 Список покупок для рецепта #{recipeId}</h2>
+        <div className="max-w-3xl mx-auto mt-6">
+            <h2 className="text-xl font-semibold mb-4">🛒 Список покупок</h2>
+            {error && <p className="text-red-500">{error}</p>}
+            {!error && items.length === 0 && <p>Список пуст.</p>}
 
-            {error && <p className="text-red-500 mb-4">{error}</p>}
-
-            {items.length === 0 ? (
-                <p className="text-gray-500">Нет ингредиентов</p>
-            ) : (
-                <ul className="space-y-3">
-                    {items.map(item => (
-                        <li
-                            key={item.id}
-                            className="p-3 border rounded flex justify-between items-center"
-                        >
+            {Object.entries(groupedByRecipe).map(([recipeTitle, recipeItems]) => (
+                <div key={recipeTitle} className="mb-6">
+                    <h3 className="text-lg font-semibold mb-2">🍽 {recipeTitle}</h3>
+                    {recipeItems.map(item => (
+                        <div key={item.id} className="p-4 border rounded mb-2 bg-white flex justify-between items-center">
                             <div>
-                                {item.ingredient} — {item.quantity} {item.unit}
-                                {item.is_purchased && (
-                                    <span className="text-green-500 ml-2">(Куплено)</span>
-                                )}
+                                <p><strong>Ингредиент:</strong> {item.ingredient_name || 'Неизвестный'}</p>
+                                <p><strong>Количество:</strong> {item.quantity} {item.unit}</p>
                             </div>
-                            <button
-                                onClick={() => togglePurchased(item.id, item.is_purchased)}
-                                className={`px-3 py-1 text-sm rounded ${
-                                    item.is_purchased
-                                        ? 'bg-yellow-500 text-white hover:bg-yellow-600'
-                                        : 'bg-green-500 text-white hover:bg-green-600'
-                                }`}
-                            >
-                                {item.is_purchased ? 'Отметить как не куплено' : 'Отметить как куплено'}
-                            </button>
-                        </li>
+                            {!item.is_purchased && (
+                                <button
+                                    onClick={() => handlePurchase(item.id)}
+                                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                                >
+                                    Купить
+                                </button>
+                            )}
+                            {item.is_purchased && (
+                                <span className="text-green-600 font-semibold">✅ Куплено</span>
+                            )}
+                        </div>
                     ))}
-                </ul>
-            )}
+                </div>
+            ))}
         </div>
     );
 };
